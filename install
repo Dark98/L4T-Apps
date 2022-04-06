@@ -40,7 +40,7 @@ if [ -z "$DIRECTORY" ] || [ "$DIRECTORY" == "$HOME" ] || [ "$DIRECTORY" == bash 
   #if directory does not exist, download it
   if [ ! -d "$DIRECTORY" ];then
     echo "Downloading L4T-Apps..."
-    output="$(git clone --depth 1 http://git.dark98.co.uk/Dark98/l4t-apps.git "$DIRECTORY" 2>&1)"
+    output="$(git clone --depth 1 https://github.com/Dark98/L4T-Apps.git "$DIRECTORY" 2>&1)"
     if [ ! -d "$DIRECTORY" ];then
       error "L4T-Apps download failed!\ngit clone output was: $output"
     fi

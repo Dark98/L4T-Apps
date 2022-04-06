@@ -45,7 +45,7 @@ Pi-Apps now serves **over 1,000,000 people** and hosts [nearly 200 apps](https:/
 ## Install Pi-Apps
 Open a terminal and run this command:
 ```bash
-wget -qO- https://git.dark98.co.uk/Dark98/l4t-apps/raw/branch/master/install | bash
+wget -qO- https://raw.githubusercontent.com/Dark98/l4t-apps/master/install | bash
 ```
 <img src="icons/screenshots/main%20window.png?raw=true" align="right" height="270px"/>
 
