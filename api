@@ -32,30 +32,12 @@ status_green() { #announce the success of a major action
 generate_logo() { #display colorized L4T-Apps logo in terminal
   #generate l4t-apps logo
   #https://misc.flogisoft.com/bash/tip_colors_and_formatting
-  blue='\e[38;5;21m' #blue='\e[38;5;27m' #lighter
-  green='\e[38;5;46m'
-  darkgreen='\e[38;5;34m'
-  red='\e[38;5;197m'
-  
-  #use simpler logo if OS is Buster or lower - to fix issue https://github.com/Botspot/pi-apps/issues/1441
-  local version_id="$(grep 'VERSION_ID=' /etc/os-release | tr -cd '0123456789')"
-  if [ -z "$version_id" ] || [ "$version_id" -lt 11 ];then
-    echo -e "\e[40m\e[97m    ${green}▅${darkgreen}▅▅▅▅${green}▅\e[40m\e[97m
- ${blue}▂▂▂${green}█${blue}▂▂▂▂${green}█${blue}▂▂▂\e[40m\e[97m
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █▀▀▆ ▄
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █▄▄\e[7m▂\e[27m ▄ ${blue}▄▄\e[97m ▆▀▀█ █▀▀▆ █▀▀▆ ▆\e[7m━━━\e[27m
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █    █    \e[7m▂\e[27m▄▄█ █▄▄\e[7m▂\e[27m █▄▄\e[7m▂\e[27m ▄▄▄\e[7m▂\e[27m
- ${blue}\e[7m▂\e[27m\e[107m▃▃▃▃▃▃▃▃▃▃\e[40m\e[7m▂\e[27m\e[40m\e[40m\e[97m                  █    █
-\e[0m\e[0m"
-  else
-    echo -e "\e[40m\e[97m    ${green}🭊${darkgreen}▅▅▅▅${green}🬿\e[40m\e[97m
- ${blue}🭈▂▂${green}█${blue}▂▂▂▂${green}█${blue}▂▂🬽\e[40m\e[97m
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █▀▀🭍 ▄
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █▄▄🭞 ▄ ${blue}▄▄\e[97m 🭂▀▀█ █▀▀🭍 █▀▀🭍 🭂🬰🬰🬰
- \e[107m${blue}▌  ${red}\e[40m▗▖▗▖▗▖\e[107m${blue}  ▐\e[40m\e[97m   █    █    🭓▄▄█ █▄▄🭞 █▄▄🭞 ▄▄▄🭞
- ${blue}🭓\e[107m🬭🬭🬰🬰🬰🬰🬰🬰🬭🬭\e[40m🭞\e[40m\e[97m                  █    █
-\e[0m\e[0m"
-  fi
+   _      _ _     _____            ___      ___     ___    ___   
+  | |    | | |   |_   _|   ___    /   \    | _ \   | _ \  / __|  
+  | |__  |_  _|    | |    |___|   | - |    |  _/   |  _/  \__ \  
+  |____|  _|_|_   _|_|_   _____   |_|_|   _|_|_   _|_|_   |___/  
+_|"""""|_|"""""|_|"""""|_|     |_|"""""|_| """ |_| """ |_|"""""| 
+"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
 }
 
 generate_splashscreen() { #Place 10 random app icons on the loading screen for the next time L4T-Apps launches
