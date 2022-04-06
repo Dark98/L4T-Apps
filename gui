@@ -10,15 +10,15 @@ function error {
 }
 
 if ! command -v yad &>/dev/null;then
-  error "YAD needs to be installed to run pi-apps."
+  error "YAD needs to be installed to run l4t-apps."
 fi
 
 #launch splash screen: use png if available, otherwise use svg
 if [ -s "${DIRECTORY}/icons/splashscreen.png" ];then
-  yad --undecorated --title=Pi-Apps --image="${DIRECTORY}/icons/splashscreen.png" --center --no-buttons --skip-taskbar &
+  yad --undecorated --title=L4T-Apps --image="${DIRECTORY}/icons/splashscreen.png" --center --no-buttons --skip-taskbar &
   splashpid=$!
 else
-  yad --undecorated --title=Pi-Apps --image="${DIRECTORY}/icons/vector/splashscreen.svg" --center --no-buttons --skip-taskbar &
+  yad --undecorated --title=L4T-Apps --image="${DIRECTORY}/icons/vector/splashscreen.svg" --center --no-buttons --skip-taskbar &
   splashpid=$!
 fi
 
@@ -84,9 +84,9 @@ runonce <<"EOF"
   rm -rf "${DIRECTORY}/apps/Turbo Scratch"
   mv -f "${DIRECTORY}/data/status/Turbo Scratch" "${DIRECTORY}/data/status/Turbowarp" 2>/dev/null
   
-  #rename 'Pi-Apps Terminal Plugin' app to 'Pi-Apps Terminal Plugin (python)'
-  rm -rf "${DIRECTORY}/apps/Pi-Apps Terminal Plugin"
-  mv -f "${DIRECTORY}/data/status/Pi-Apps Terminal Plugin" "${DIRECTORY}/data/status/Pi-Apps Terminal Plugin (python)" 2>/dev/null
+  #rename 'L4T-Apps Terminal Plugin' app to 'L4T-Apps Terminal Plugin (python)'
+  rm -rf "${DIRECTORY}/apps/L4T-Apps Terminal Plugin"
+  mv -f "${DIRECTORY}/data/status/L4T-Apps Terminal Plugin" "${DIRECTORY}/data/status/L4T-Apps Terminal Plugin (python)" 2>/dev/null
   
   #rename 'Whatsapp' app to 'WhatsApp'
   rm -rf "${DIRECTORY}/apps/Whatsapp"
@@ -150,7 +150,7 @@ EOF
 #transition from box86-no-binfmt-restart package to box86
 runonce <<"EOF"
   if dpkg -l box86-no-binfmt-restart &>/dev/null ;then
-    sudo dpkg --remove box86-no-binfmt-restart pi-apps-5f3374a7 && sudo apt update && sudo apt install box86 -y
+    sudo dpkg --remove box86-no-binfmt-restart l4t-apps-5f3374a7 && sudo apt update && sudo apt install box86 -y
   fi
   
   #if box86 is supposedly installed, but box86 command not found, reinstall box86
@@ -162,7 +162,7 @@ runonce <<"EOF"
   true
 EOF
 
-#remove files from pi-apps folder that are no longer used
+#remove files from l4t-apps folder that are no longer used
 runonce <<"EOF"
   rm -f "${DIRECTORY}/etc/bitlylink"
   rm -rf "${DIRECTORY}/data/categories"
@@ -180,7 +180,7 @@ EOF
 
 #change settings icon
 runonce <<"EOF"
-  [ -a "$HOME/.local/share/applications/pi-apps-settings.desktop" ] && sed -i "s/logo.png/settings.png/g" "$HOME/.local/share/applications/pi-apps-settings.desktop" || true
+  [ -a "$HOME/.local/share/applications/l4t-apps-settings.desktop" ] && sed -i "s/logo.png/settings.png/g" "$HOME/.local/share/applications/l4t-apps-settings.desktop" || true
 EOF
 
 #recompile xlunch for existing users because icons are rendered differently now. See: https://github.com/Tomas-M/xlunch/issues/129#issuecomment-1051006971
@@ -315,7 +315,7 @@ while true;do
         "--button=!${DIRECTORY}/icons/info.png!Details:0" )
       fi
       
-      app="$(echo -e "$LIST" | yad --center --title='Pi-Apps' --width=310 --height=400 --no-headers \
+      app="$(echo -e "$LIST" | yad --center --title='L4T-Apps' --width=310 --height=400 --no-headers \
         --text="$([ -z "$prefix" ] && echo "$motd" || echo "Viewing $(echo "$prefix" | tr '/' '>') category")" \
         --image="$([ -f "${DIRECTORY}/icons/categories/$(basename "$prefix")-64.png" ] && echo "${DIRECTORY}/icons/categories/$(basename "$prefix")-64.png" || echo "${DIRECTORY}/icons/logo-64.png")" --image-on-top \
         --list --multiple --separator='\n' --window-icon="${DIRECTORY}/icons/logo.png" \
@@ -438,29 +438,29 @@ $LIST"
       if [ "$guimode" == xlunch-light-3d ];then
         #light mode
         app="$(echo -e "$LIST" | xlunch --multiple -WoCS -s 64 --bc e0e0e000 --tc 000000 --pc 6060ffff --hc ffffff50 \
-          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "Pi-Apps: Raspberry Pi app store" \
+          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "L4T-Apps: Raspberry Pi app store" \
           --icon "${DIRECTORY}/icons/logo.png" --scrollbarcolor ffffff40 --scrollindicatorcolor 0000ff80 \
           --width $width --height $height --xposition $xposition --yposition $yposition \
-          --button "${DIRECTORY}/icons/logo-3d.png;;$((($width/2)-(300/2))),0;pi-apps-homepage1" \
+          --button "${DIRECTORY}/icons/logo-3d.png;;$((($width/2)-(300/2))),0;l4t-apps-homepage1" \
           -g "${DIRECTORY}/icons/background-3d.png"
           )"
       elif [ "$guimode" == xlunch-dark-3d ];then
         #dark mode, 3d opaque version
         app="$(echo -e "$LIST" | xlunch --multiple -WoCS -s 64 --bc ffffff00 --tc DCDDDE --pc ffffffa0 --hc ffffff30 \
-          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "Pi-Apps: Raspberry Pi app store" \
+          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "L4T-Apps: Raspberry Pi app store" \
           --icon "${DIRECTORY}/icons/logo.png" --scrollbarcolor ffffff20 --scrollindicatorcolor ffffff40 \
           --width $width --height $height --xposition $xposition --yposition $yposition \
-          --button "${DIRECTORY}/icons/logo-3d-dark.png;;$((($width/2)-(300/2))),0;pi-apps-homepage1" \
+          --button "${DIRECTORY}/icons/logo-3d-dark.png;;$((($width/2)-(300/2))),0;l4t-apps-homepage1" \
           -g "${DIRECTORY}/icons/background-3d-dark.png"
           )"
       else
         #dark mode, transparent version
         app="$(echo -e "$LIST" | xlunch --multiple -WoCS -s 64 --bc 000000A0 --tc ffffffff --pc 6060ffff --hc ffffff30 \
-          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "Pi-Apps: Raspberry Pi app store" \
+          -p "$searchbox" -a -c $([ $width -lt 550 ] && echo 1 || echo 2) --title "L4T-Apps: Raspberry Pi app store" \
           --icon "${DIRECTORY}/icons/logo.png" --scrollbarcolor ffffff40 --scrollindicatorcolor 0000ff80 \
           --width $width --height $height --xposition $xposition --yposition $yposition \
-          --button "${DIRECTORY}/icons/logo-128.png;;$((($width/2)-(128/2))),0;pi-apps-homepage1" \
-          --button "${DIRECTORY}/icons/logo-text.png;;$([ -z "$prefix" ] && echo '45' || echo '65'),$([ -z "$prefix" ] && echo '10' || echo '0');pi-apps-homepage1"
+          --button "${DIRECTORY}/icons/logo-128.png;;$((($width/2)-(128/2))),0;l4t-apps-homepage1" \
+          --button "${DIRECTORY}/icons/logo-text.png;;$([ -z "$prefix" ] && echo '45' || echo '65'),$([ -z "$prefix" ] && echo '10' || echo '0');l4t-apps-homepage1"
           #-g ~/blur.png
           )"
       fi
@@ -472,7 +472,7 @@ $LIST"
       fi
       
       #homepage button
-      if [ "$app" == 'pi-apps-homepage1' ];then
+      if [ "$app" == 'l4t-apps-homepage1' ];then
         chromium-browser "$(cat "${DIRECTORY}/etc/git_url")" &
         app=''
         action=main-window
@@ -584,7 +584,7 @@ This app installed these packages: $(cat "${DIRECTORY}/data/installed-packages/$
       fi
       if [ -f "${DIRECTORY}/apps/${app}/credits" ];then
         #if credits file exists, display credits button
-        whichbutton+=("--button=Credits!!See who made the app and who put it on Pi-Apps:10")
+        whichbutton+=("--button=Credits!!See who made the app and who put it on L4T-Apps:10")
       fi
       #display buttons based on app's status file
       if [ "$(app_status "${app}")" == 'installed' ];then
@@ -740,7 +740,7 @@ This app installed these packages: $(cat "${DIRECTORY}/data/installed-packages/$
     action="$prevaction" #return to previous action
     
   elif [ "$action" == mind-reading ];then
-    yad --center --title='Pi-Apps' --width=310 \
+    yad --center --title='L4T-Apps' --width=310 \
       --window-icon="${DIRECTORY}/icons/logo.png" \
       --image="${DIRECTORY}/icons/mind-reading.png" \
       --text="Mind reading is not supported.

@@ -1,9 +1,9 @@
-# Inside Pi-Apps: everything a power-user should know
-This guide will attempt to explain how Pi-Apps works. By nature, this cannot be complete, so feel free to look through the scripts yourself and ask the Pi-Apps developers questions.
+# Inside Linux4Tegra: everything a power-user should know
+This guide will attempt to explain how L4T-Apps works. By nature, this cannot be complete, so feel free to look through the scripts yourself and ask the L4T-Apps developers questions.
 ## Table of contents
 - [Introduction](#introduction)
 - [The app-folder](#the-app-folder)
-- [The main Pi-Apps folder](#the-main-pi-apps-folder)
+- [The main L4T-Apps folder](#the-main-l4t-apps-folder)
 - [The App Status folder](#the-app-status-folder)
 - [The `manage` script](#the-manage-script)
 - [The `updater` script](#the-updater-script)
@@ -17,9 +17,9 @@ This guide will attempt to explain how Pi-Apps works. By nature, this cannot be 
 - [The `categoryedit` script](#the-categoryedit-script)
 - [The `logviewer` script](#the-logviewer-script)
 - [The `viewlog` script](#the-viewlog-script)
-# How Pi-Apps works
+# How L4T-Apps works
 ## Introduction
-- Pi-Apps is written in **`bash`**. This is a scripting language for Linux, with origins in the 80s. Bash is not a compiled language like C, it's an interpreted language, similar to Python and Windows .bat files.  
+- L4T-Apps is written in **`bash`**. This is a scripting language for Linux, with origins in the 80s. Bash is not a compiled language like C, it's an interpreted language, similar to Python and Windows .bat files.  
   Bash serves a different purpose than a compiled language: orchestrating OS-level events and prioritizing programming-time over execution-time. It is system-dependent and architecture-dependent.  
   You probably interact with `bash` without even realizing it! Nearly all Linux distributions today use a **bash terminal**. *If you have ever opened a terminal, you have interacted with bash.*
 - Pi-Apps is comprised of **bash scripts**. These are text files that are filled with bash commands. To illustrate this, you can often *open* a bash script, *copy* the contents, and *paste* it into a bash terminal. And it will work exactly the same as if you executed the file! In fact, if Pi-Apps was reorganized into a single standalone bash script, you could *copy and paste the entire thing* into a terminal and have a working app store!

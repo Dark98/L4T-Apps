@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#This script is the backbone of Pi-Apps. It hosts functions that all other scripts depend upon.
+#This script is the backbone of L4T-Apps. It hosts functions that all other scripts depend upon.
 #By default, this file is hard to read. But there's an easy way to fix that. In your code editor, find the option to "Fold All".
 #In Geany, this option can be found in the Document toolbar.
 #Botspot has found it helpful to create a keyboard shortcut to do this quickly. You may find it helpful too.
@@ -29,8 +29,8 @@ status_green() { #announce the success of a major action
   echo -e "\e[92m$1\e[0m" 1>&2
 }
 
-generate_logo() { #display colorized Pi-Apps logo in terminal
-  #generate pi-apps logo
+generate_logo() { #display colorized L4T-Apps logo in terminal
+  #generate l4t-apps logo
   #https://misc.flogisoft.com/bash/tip_colors_and_formatting
   blue='\e[38;5;21m' #blue='\e[38;5;27m' #lighter
   green='\e[38;5;46m'
@@ -58,7 +58,7 @@ generate_logo() { #display colorized Pi-Apps logo in terminal
   fi
 }
 
-generate_splashscreen() { #Place 10 random app icons on the loading screen for the next time Pi-Apps launches
+generate_splashscreen() { #Place 10 random app icons on the loading screen for the next time L4T-Apps launches
   
   #get 10 random apps. Some are exempted because they don't display well.
   local apps="$(list_apps local | grep -v 'Raspi2png\|template\|YouTubuddy' | shuf)"
@@ -299,56 +299,56 @@ apt_update() { #run an apt update with error-checking and minimal output
   return 0
 }
 
-repo_add() { #add local packages to the /tmp/pi-apps-local-packages repository
-  #given local deb file(s), make a local apt repository in /tmp/pi-apps-local-packages
+repo_add() { #add local packages to the /tmp/l4t-apps-local-packages repository
+  #given local deb file(s), make a local apt repository in /tmp/l4t-apps-local-packages
   
   #see: https://unix.stackexchange.com/questions/87130/how-to-quickly-create-a-local-apt-repository-for-random-packages-using-a-debian
   #and: https://serverfault.com/questions/447457/use-apt-get-source-on-a-debian-repo-without-using-etc-apt-source-list
   #and: https://askubuntu.com/questions/382664/use-custom-directory-for-apt-get
   
-  #use this flag for apt commands to use the local repository: -o Dir::Etc::SourceList=/tmp/pi-apps-local-packages/source.list
+  #use this flag for apt commands to use the local repository: -o Dir::Etc::SourceList=/tmp/l4t-apps-local-packages/source.list
   
   #ensure the repo-folder exists
-  mkdir -p /tmp/pi-apps-local-packages || error "repo_add(): failed to create folder /tmp/pi-apps-local-packages"
+  mkdir -p /tmp/l4t-apps-local-packages || error "repo_add(): failed to create folder /tmp/l4t-apps-local-packages"
   
   #move every mentioned deb file to it
   for file in "$@"; do
-    mv -f "$file" /tmp/pi-apps-local-packages || error "repo_add(): failed to move '$file' to the repository: /tmp/pi-apps-local-packages"
+    mv -f "$file" /tmp/l4t-apps-local-packages || error "repo_add(): failed to move '$file' to the repository: /tmp/l4t-apps-local-packages"
   done
 }
 
-repo_refresh() { #index the pi-apps local apt repository
+repo_refresh() { #index the l4t-apps local apt repository
   
-  [ -d /tmp/pi-apps-local-packages ] || error "repo_update(): cannot index the repository - it's missing! /tmp/pi-apps-local-packages"
+  [ -d /tmp/l4t-apps-local-packages ] || error "repo_update(): cannot index the repository - it's missing! /tmp/l4t-apps-local-packages"
   
   #index the repository by creating a Packages file
-  (cd /tmp/pi-apps-local-packages && apt-ftparchive packages . > Packages) || error "repo_update(): apt-ftparchive failed to index the repository: /tmp/pi-apps-local-packages
-The Pi-Apps developers have been receiving a few of these errors recently, but we can't figure out what the problem is without your help. Could you please reach out so we can solve this?"
+  (cd /tmp/l4t-apps-local-packages && apt-ftparchive packages . > Packages) || error "repo_update(): apt-ftparchive failed to index the repository: /tmp/l4t-apps-local-packages
+The L4T-Apps developers have been receiving a few of these errors recently, but we can't figure out what the problem is without your help. Could you please reach out so we can solve this?"
   #Make sure the Packages file actually exists
-  [ -f /tmp/pi-apps-local-packages/Packages ] || error "repo_update(): apt-ftparchive failed to index the repository: /tmp/pi-apps-local-packages
-The Pi-Apps developers have been receiving a few of these errors recently, but we can't figure out what the problem is without your help. Could you please reach out so we can solve this?"
+  [ -f /tmp/l4t-apps-local-packages/Packages ] || error "repo_update(): apt-ftparchive failed to index the repository: /tmp/l4t-apps-local-packages
+The L4T-Apps developers have been receiving a few of these errors recently, but we can't figure out what the problem is without your help. Could you please reach out so we can solve this?"
   
   #by default, apt-ftparchive will generate lines like "Filename: ./package-name". This seemed to have caused one error-report, so we remove the "./" to hopefully solve the problem.
-  sed -i 's+^Filename: \./+Filename: +g' /tmp/pi-apps-local-packages/Packages
+  sed -i 's+^Filename: \./+Filename: +g' /tmp/l4t-apps-local-packages/Packages
   
   #create a source.list for the repository - copy existing sources.list and then add the new line to bottom
-  rm -f /tmp/pi-apps-local-packages/source.list
-  cp -a /etc/apt/sources.list /tmp/pi-apps-local-packages/source.list
-  echo "deb [trusted=yes] file:/tmp/pi-apps-local-packages/ ./" >> /tmp/pi-apps-local-packages/source.list
+  rm -f /tmp/l4t-apps-local-packages/source.list
+  cp -a /etc/apt/sources.list /tmp/l4t-apps-local-packages/source.list
+  echo "deb [trusted=yes] file:/tmp/l4t-apps-local-packages/ ./" >> /tmp/l4t-apps-local-packages/source.list
 }
 
 repo_rm() { #remove the local apt repository
-  #wait for other operations to finish before continuing - hopefully this will solve cases when the pi-apps local repository was removed unexpectedly by a second process
+  #wait for other operations to finish before continuing - hopefully this will solve cases when the l4t-apps local repository was removed unexpectedly by a second process
   apt_lock_wait
   
-  rm -rf /tmp/pi-apps-local-packages || sudo rm -rf /tmp/pi-apps-local-packages || error "repo_rm(): failed to remove the local repository: /tmp/pi-apps-local-packages"
+  rm -rf /tmp/l4t-apps-local-packages || sudo rm -rf /tmp/l4t-apps-local-packages || error "repo_rm(): failed to remove the local repository: /tmp/l4t-apps-local-packages"
 }
 
-app_to_pkgname() { #given an app-name, convert it to a unique, valid package-name that starts with 'pi-apps-'
+app_to_pkgname() { #given an app-name, convert it to a unique, valid package-name that starts with 'l4t-apps-'
   local app="$1"
   [ -z "$app" ] && error "app_to_pkgname(): no app-name specified"
   
-  echo "pi-apps-$(echo "$app" | md5sum | cut -c1-8 | awk '{print $1}')"
+  echo "l4t-apps-$(echo "$app" | md5sum | cut -c1-8 | awk '{print $1}')"
 }
 
 install_packages() { #Make some packages dependencies of the $app app. Package-names, regex, filenames, and urls are supported.
@@ -369,7 +369,7 @@ install_packages() { #Make some packages dependencies of the $app app. Package-n
   #array-variable to store custom apt options (for local repositories)
   local apt_flags=()
   
-  #variable to remember if the pi-apps-local-packages repository is being used
+  #variable to remember if the l4t-apps-local-packages repository is being used
   local using_local_packages=0
   repo_rm #remove the local repo, just in case the last operation left it in an unrecoverable state.
   
@@ -388,9 +388,9 @@ install_packages() { #Make some packages dependencies of the $app app. Package-n
       packagename="$(dpkg-deb -I "$package" | grep "^ Package:" | awk '{print $2}')"
       [ -z "$packagename" ] && error "install_packages(): failed to determine a package-name for the file '$package'"
       
-      #add this local package to the pi-apps-local-packages repository
+      #add this local package to the l4t-apps-local-packages repository
       repo_add "$package"
-      using_local_packages=1 #remember that the pi-apps-local-packages repository is being used
+      using_local_packages=1 #remember that the l4t-apps-local-packages repository is being used
       
       #replace package filename with name of package
       packages="$(echo "$packages" | sed "s|$package|$packagename|")"
@@ -414,9 +414,9 @@ install_packages() { #Make some packages dependencies of the $app app. Package-n
       packagename="$(dpkg-deb -I "$filename" | grep "^ Package:" | awk '{print $2}')"
       [ -z "$packagename" ] && error "install_packages(): failed to determine a package-name for the file '$filename'"
       
-      #add this local package to the pi-apps-local-packages repository
+      #add this local package to the l4t-apps-local-packages repository
       repo_add "$filename"
-      using_local_packages=1 #remember that the pi-apps-local-packages repository is being used
+      using_local_packages=1 #remember that the l4t-apps-local-packages repository is being used
       
       #replace package url with name of package
       packages="$(echo "$packages" | sed "s|$package|$packagename|")"
@@ -445,10 +445,10 @@ install_packages() { #Make some packages dependencies of the $app app. Package-n
   packages="$(tr '\n' ' ' <<<"$packages")"
   
   if [ "$using_local_packages" == 1 ];then
-    #Initialize the pi-apps-local-packages repository
+    #Initialize the l4t-apps-local-packages repository
     repo_refresh
     #add this repository to flags to add to apt
-    apt_flags+=(-o 'Dir::Etc::SourceList=/tmp/pi-apps-local-packages/source.list')
+    apt_flags+=(-o 'Dir::Etc::SourceList=/tmp/l4t-apps-local-packages/source.list')
   fi
   #run an apt update
   apt_update "${apt_flags[@]}" || exit 1
@@ -476,9 +476,9 @@ install_packages() { #Make some packages dependencies of the $app app. Package-n
     
     rm -rf ~/$package_name ~/$package_name.deb
     mkdir -p ~/$package_name/DEBIAN
-    echo "Maintainer: Pi-Apps team
+    echo "Maintainer: L4T-Apps team
 Name: $app
-Description: Dummy package created by pi-apps to install dependencies for the '$app' app
+Description: Dummy package created by l4t-apps to install dependencies for the '$app' app
 Version: 1.0
 Architecture: all
 Priority: optional
@@ -520,8 +520,8 @@ Package: $package_name" > ~/$package_name/DEBIAN/control
     
     #some error reports seem to indicate that package URLs aren't being properly downloaded. This output aims to solve the mystery.
     if [ "$using_local_packages" == 1 ] && echo "$output" | grep 'but it is not installable' ;then
-      echo -e "\e[91mThe Pi-Apps Local Repository was being used, and a package seemed to not be available. Here's the Packages file:\e[39m"
-      cat /tmp/pi-apps-local-packages/Packages
+      echo -e "\e[91mThe L4T-Apps Local Repository was being used, and a package seemed to not be available. Here's the Packages file:\e[39m"
+      cat /tmp/l4t-apps-local-packages/Packages
     fi
     
     exit 1
@@ -714,9 +714,9 @@ list_apps() { # $1 can be: installed, uninstalled, corrupted, cpu_installable, h
     
   elif [ "$1" == online ];then
     #list apps that exist on the online git repo
-    if [ -d "${DIRECTORY}/update/pi-apps/apps" ];then
+    if [ -d "${DIRECTORY}/update/l4t-apps/apps" ];then
       #if update folder exists, just use that
-      ls "${DIRECTORY}/update/pi-apps/apps" | grep .
+      ls "${DIRECTORY}/update/l4t-apps/apps" | grep .
     else
       #if update folder doesn't exist, then parse github HTML to get a list of online apps. Horrible idea, but it works!
       wget -qO- "${repo_url}/tree/master/apps" | grep 'title=".*" data-pjax=' -o | sed 's/title="//g' | sed 's/" data-pjax=//g'
@@ -805,7 +805,7 @@ bitly_link() { #Runs whenever an app is installed/uninstalled to tally the numbe
     #determine the name of the link to "click"
     bitlylink="https://bit.ly/pi-apps-$trigger-$(echo "$app" | tr -d ' ' | sed 's/[^a-zA-Z0-9]//g')"
     #click it
-    curl -L --user-agent "Pi-Apps Raspberry Pi app store" "$bitlylink" &>/dev/null &
+    curl -L --user-agent "L4T-Apps Raspberry Pi app store" "$bitlylink" &>/dev/null &
   fi
 }
 
@@ -863,11 +863,11 @@ script_name_cpu() { #get script name to run based on detected CPU arch
     echo 'install-64'
   elif [ -f "${DIRECTORY}/apps/$1/install" ];then
     echo 'install'
-  elif [ -f "${DIRECTORY}/update/pi-apps/apps/$1/install-32" ] && [ $arch == 32 ];then
+  elif [ -f "${DIRECTORY}/update/l4t-apps/apps/$1/install-32" ] && [ $arch == 32 ];then
     echo 'install-32'
-  elif [ -f "${DIRECTORY}/update/pi-apps/apps/$1/install-64" ] && [ $arch == 64 ];then
+  elif [ -f "${DIRECTORY}/update/l4t-apps/apps/$1/install-64" ] && [ $arch == 64 ];then
     echo 'install-64'
-  elif [ -f "${DIRECTORY}/update/pi-apps/apps/$1/install" ];then
+  elif [ -f "${DIRECTORY}/update/l4t-apps/apps/$1/install" ];then
     echo 'install'
   else
     true #app not compatible with current arch
@@ -914,7 +914,7 @@ will_reinstall() { #return 0 if $1 app will be reinstalled during an update, oth
   scriptname="$(script_name_cpu "$1")"
   
   oldinstallhash="$(sha1sum "${DIRECTORY}/apps/${1}/${scriptname}" 2>/dev/null | awk '{print $1}')"
-  newinstallhash="$(sha1sum "${DIRECTORY}/update/pi-apps/apps/${1}/${scriptname}" 2>/dev/null | awk '{print $1}')"
+  newinstallhash="$(sha1sum "${DIRECTORY}/update/l4t-apps/apps/${1}/${scriptname}" 2>/dev/null | awk '{print $1}')"
   
   #if install script was changed                              #if installed already
   if [ "$newinstallhash" != "$oldinstallhash" ] && [ "$(app_status "${1}")" == 'installed' ];then
@@ -1099,7 +1099,7 @@ log_diagnose() { #Given a logfile, explain errors to user, suggest fixes, and ca
   
   #check for 'E: The repository'
   if grep -qF 'E: The repository' <<<"$errors" || grep -qF 'sources.list entry misspelt' <<<"$errors" || grep -qF 'component misspelt in' <<<"$errors" ;then
-    error_caption+=("APT reported a faulty repository, and you must fix it before Pi-Apps will work.
+    error_caption+=("APT reported a faulty repository, and you must fix it before L4T-Apps will work.
 
 To delete the repository:
 Remove the relevant line from /etc/apt/sources.list file or delete one file in
@@ -1111,7 +1111,7 @@ sources.list requires root permissions to edit: sudo mousepad /path/to/file")
   
   #check for 'NO_PUBKEY' or ' is no longer signed.'
   if grep -qF 'NO_PUBKEY' <<<"$errors" || grep -qF ' is no longer signed.' <<<"$errors" ;then
-    error_caption+=("APT reported an unsigned repository. This has to be solved before APT or Pi-Apps, will work.
+    error_caption+=("APT reported an unsigned repository. This has to be solved before APT or L4T-Apps, will work.
 
 If you're not sure what to do, you can try to fix the problem by running this command in a terminal:
 sudo apt update 2>&1 | sed -ne 's/.*NO_PUBKEY //p' | while read key; do if ! [[ ${keys[*]} =~ "\""$key"\"" ]]; then sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys "\""$key"\""; keys+=("\""$key"\""); fi; done")
@@ -1128,7 +1128,7 @@ Check your Internet connection and try again.")
   
   #check for 'is configured multiple times in'
   if grep -qF 'is configured multiple times in' <<<"$errors" ;then
-    error_caption+=("APT reported a double-configured repository, and you must fix it to fix Pi-Apps.
+    error_caption+=("APT reported a double-configured repository, and you must fix it to fix L4T-Apps.
 
 To delete the repository:
 Remove the relevant line from /etc/apt/sources.list file or delete the file in
@@ -1185,7 +1185,7 @@ Please run this command: sudo apt --fix-broken install")
   fi
   
   if grep -qF "dpkg --configure -a" <<<"$errors" ;then
-    error_caption+=("Before dpkg, apt, or Pi-Apps will work, dpkg needs to repair your system.
+    error_caption+=("Before dpkg, apt, or L4T-Apps will work, dpkg needs to repair your system.
 
 Please run this command: sudo dpkg --configure -a")
     error_type="system"
@@ -1215,8 +1215,8 @@ Please free up some space, then try again.")
   if grep -qF "Command line option --allow-releaseinfo-change is not understood" <<<"$errors" ;then
     error_caption+=("The Debian Project recently upgraded from Buster to version Bullseye. As a result, all Raspberry Pi OS Buster users will receive APT errors saying the repositories changed from 'stable' to 'oldstable'.
 
-This error broke pi-apps. To fix it, the Pi-Apps developers added something to the 'sudo apt update' command: --allow-releaseinfo-change.
-This flag allows the repository migration to succeed, thereby allowing Pi-Apps to work again.
+This error broke l4t-apps. To fix it, the L4T-Apps developers added something to the 'sudo apt update' command: --allow-releaseinfo-change.
+This flag allows the repository migration to succeed, thereby allowing L4T-Apps to work again.
 
 Unfortunately for you, your operating system is too old for apt to understand this flag we added. Please upgrade your operating system for a better experience. Raspbian Stretch is unsupported and many apps will not install.
 
@@ -1227,7 +1227,7 @@ Please flash your SD card with the latest release of Raspberry Pi OS: https://ww
   if grep -qF "lzma error: compressed data is corrupt" <<<"$errors" ;then
     error_caption+=("A package failed to install because it appears corrupted. (buggy download?)
 
-Try installing the same app again and if the problem persists please reach out to the Pi-Apps developers.")
+Try installing the same app again and if the problem persists please reach out to the L4T-Apps developers.")
     error_type="internet"
   fi
   
@@ -1247,7 +1247,7 @@ sudo mkdir -p /var/lib/dpkg/updates")
   if grep -q "E: Repository .* changed its 'Suite' value" <<<"$errors" ;then
     error_caption+=("One or more APT repositories on your system have changed Suite values. Usually this occurs when a new version of Debian is released every two years.
 
-Pi-Apps ought to work around this error, but somehow it did not.
+L4T-Apps ought to work around this error, but somehow it did not.
 Please run this command in a terminal: sudo apt update --allow-releaseinfo-change")
     error_type="system"
   fi
@@ -1264,30 +1264,30 @@ Perhaps reinstalling the package would help?")
   fi
   
   if grep -qF "error processing package dphys-swapfile" <<<"$errors" ;then
-    error_caption+=("Before dpkg, apt, or Pi-Apps will work, dphys-swapfile must be fixed.
+    error_caption+=("Before dpkg, apt, or L4T-Apps will work, dphys-swapfile must be fixed.
 
-Try Googling the above errors, or ask the Pi-Apps developers for help.")
+Try Googling the above errors, or ask the L4T-Apps developers for help.")
     error_type="package"
   fi
   
   if grep -qF "missing /boot/firmware, did you forget to mount it" <<<"$errors" || grep -q "u-boot-rpi" <<<"$errors" ;then
     error_caption+=("Package(s) failed to install because your boot drive is not working.
 
-You must fix the u-boot-rpi package before dpkg, apt, or Pi-Apps will work.")
+You must fix the u-boot-rpi package before dpkg, apt, or L4T-Apps will work.")
     error_type="package"
   fi
   
   if grep -q "files list file for package .* is missing final newline" <<<"$errors" ;then
-    error_caption+=("Before dpkg, apt, or Pi-Apps will work, your system must be repaired.
+    error_caption+=("Before dpkg, apt, or L4T-Apps will work, your system must be repaired.
 
-Try Googling the above errors, or ask the Pi-Apps developers for help.
+Try Googling the above errors, or ask the L4T-Apps developers for help.
 Perhaps this link will help: https://askubuntu.com/questions/909719/dpkg-unrecoverable-fatal-error-aborting-files-list-file-for-package-linux-ge")
     error_type="package"
   fi
   
   if grep -qF "raspberrypi-kernel package post-installation script subprocess returned error exit status" <<<"$errors" ;then
     error_caption+=("The raspberrypi-kernel package on your system is causing problems.
-Pi-Apps, dpkg and APT won't work properly until the problem is fixed.
+L4T-Apps, dpkg and APT won't work properly until the problem is fixed.
 
 Google the errors above this message, or ask in the Raspberry Pi Forums.
 https://www.raspberrypi.org/forums")
@@ -1296,7 +1296,7 @@ https://www.raspberrypi.org/forums")
   
   if grep -qF "raspberrypi-bootloader package pre-installation script subprocess returned error exit status" <<<"$errors" ;then
     error_caption+=("The raspberrypi-bootloader package on your system is causing problems.
-Pi-Apps, dpkg and APT won't work properly until the problem is fixed.
+L4T-Apps, dpkg and APT won't work properly until the problem is fixed.
 
 Google the errors above this message, or ask in the Raspberry Pi Forums.
 https://www.raspberrypi.org/forums")
@@ -1391,7 +1391,7 @@ Maybe reinstalling this package would help?")
   if grep -qF "cmake but it is not installable" <<<"$errors" ;then
     error_caption+=("The cmake package cannot be installed. This is a Linux core package, so it should be installable. Most likely this is caused by you tampering with your apt sources.
 
-If you need help, reach out to the Pi-Apps developers or in the Raspberry Pi forums: https://forums.raspberrypi.com")
+If you need help, reach out to the L4T-Apps developers or in the Raspberry Pi forums: https://forums.raspberrypi.com")
     error_type="package"
   fi
   
@@ -1487,7 +1487,7 @@ See this forum thread: https://raspberrypi.org/forums/viewtopic.php?t=262963")
 Try installing two packages with this command:
 sudo apt install appmenu-gtk2-module appmenu-gtk3-module
 
-And if that doesn't work, try Googling the errors or reach out to Pi-Apps developers for help.")
+And if that doesn't work, try Googling the errors or reach out to L4T-Apps developers for help.")
     error_type="system"
   fi
   
@@ -1506,7 +1506,7 @@ Try rebooting.
 Make sure systemd is setup correctly.
 If that doesn't help please read through this: https://github.com/WhitewaterFoundry/Fedora-Remix-for-WSL/issues/81
 You may want to reinstall your OS.
-Also consider reaching out to Pi-Apps developers for help.")
+Also consider reaching out to L4T-Apps developers for help.")
     error_type="system"
   fi
   
@@ -1541,14 +1541,14 @@ For solutions, see: https://askubuntu.com/a/59517")
   fi
   
   if grep -qF "cpp.o: file not recognized: file truncated" <<<"$errors" ;then
-    error_caption+=("Compiling failed. Try again, but please reach out to Pi-Apps developers for help if this same error keeps occuring.")
+    error_caption+=("Compiling failed. Try again, but please reach out to L4T-Apps developers for help if this same error keeps occuring.")
     error_type="system"
   fi
   
   if grep -q "tar: Unexpected EOF in archive\|xz: (stdin): Unexpected end of input\|xz: (stdin): Compressed data is corrupt\|xz: (stdin): File format not recognized\|gzip: stdin: invalid compressed data\-\-length error\|gzip: stdin: invalid compressed data\-\-crc error" <<<"$errors" ;then
     error_caption+=("Extraction failed. Most likely this was a corrupted download, so please try again.
 
-If this problem continues occuring, please reach out to the Pi-Apps developers for help.")
+If this problem continues occuring, please reach out to the L4T-Apps developers for help.")
     error_type="system"
   fi
   
@@ -1561,7 +1561,7 @@ sudo apt-get install xz-utils")
   fi
   
   if grep -qF "error: RPC failed; curl 56 GnuTLS recv error (-54): Error in the pull function." <<<"$errors" ;then
-    error_caption+=("Download failed due to a weird GnuTLS recv error. This is a problem with your system, not Pi-Apps. 
+    error_caption+=("Download failed due to a weird GnuTLS recv error. This is a problem with your system, not L4T-Apps. 
 
 Try following the suggestions proposed on this website: https://stackoverflow.com/questions/38378914/how-to-fix-git-error-rpc-failed-curl-56-gnutls")
     error_type="internet"
@@ -1762,28 +1762,28 @@ view_file() { #maximized yad window to view a text file
 is_supported_system() { #return 0 if system is supported, otherwise return 1
   PRETTY_NAME="$(cat /etc/os-release | grep PRETTY_NAME | tr -d '"' | awk -F= '{print $2}')"
   if uname -m | grep -qi 'x86\|i686\|i386'; then
-    echo "Pi-Apps is not supported on x86 processors. Nearly all apps will fail. Consider switching to this x86 port of Pi-Apps: https://github.com/MCRaspRBX/pi-apps-x86"
+    echo "L4T-Apps is not supported on x86 processors. Nearly all apps will fail."
     return 1
   elif grep -q '^/data/media .*Android' /proc/mounts || cat /proc/version | grep -qi Android || cat /proc/version | grep -qi termux; then
-    echo "Pi-Apps is not supported on Android. Some apps will work, but others won't."
+    echo "L4T-Apps is not supported on Android. Some apps will work, but others won't."
     return 1
   elif cat /proc/version | grep -qi Microsoft || cat /proc/sys/kernel/osrelease | grep -qi WSL || [[ -f "/run/WSL" ]] || [[ -f "/etc/wsl.conf" ]] || [ -n "$WSL_DISTRO_NAME" ]; then
-    echo "Pi-Apps is not supported on WSL."
+    echo "L4T-Apps is not supported on WSL."
     return 1
   elif echo "$PRETTY_NAME" | grep -qi 'stretch\|wheezy\|jessie'; then
-    echo "Pi-Apps is not supported on your outdated operating system. Expect many apps to fail. Consider upgrading your operating system."
+    echo "L4T-Apps is not supported on your outdated operating system. Expect many apps to fail. Consider upgrading your operating system."
     return 1
   elif echo "$PRETTY_NAME" | grep -qi 'manjaro'; then
-    echo "Pi-Apps is not supported on Manjaro."
+    echo "L4T-Apps is not supported on Manjaro."
     return 1
   elif echo "$PRETTY_NAME" | grep -qi 'Ubuntu 16'; then
-    echo "Pi-Apps is not supported on Ubuntu 16."
+    echo "L4T-Apps is not supported on Ubuntu 16."
     return 1
   elif [[ "$(uname -m)" == armv6* ]]; then
-    echo "Pi-Apps is not supported on ARMv6 Raspberry Pi boards. Expect some apps to fail."
+    echo "L4T-Apps is not supported on ARMv6 Raspberry Pi boards. Expect some apps to fail."
     return 1
   elif [ "$(id -u)" == 0 ]; then
-    echo "Pi-Apps is not designed to be run as root user."
+    echo "L4T-Apps is not designed to be run as root user."
     return 1
   elif [ "$(df -a / -B 1 --output=avail | tail -1 | tr -d ' ')" -lt $((500*1024*1024)) ];then
     echo "Your system drive has less than 500MB of free space. Watch out for "\""disk full"\"" errors."
@@ -1796,7 +1796,7 @@ is_supported_system() { #return 0 if system is supported, otherwise return 1
 get_device_info() { #returns information about current install and hardware
   echo "OS: $(cat /etc/os-release | grep PRETTY_NAME | tr -d '"' | awk -F= '{print $2}')"
   echo "OS architecture: ${arch}-bit"
-  [ ! -z "$DIRECTORY" ] && echo "Pi-Apps local commit ID: $(cd "$DIRECTORY"; git rev-parse HEAD)"
+  [ ! -z "$DIRECTORY" ] && echo "L4T-Apps local commit ID: $(cd "$DIRECTORY"; git rev-parse HEAD)"
   [ -s "$DIRECTORY"/etc/git_url ] && echo "Github latest commit ID: $(git ls-remote  $(cat "$DIRECTORY"/etc/git_url) HEAD | sed s/HEAD//g)"
   echo "Kernel: $(uname -m) $(uname -r)"
   # obtain model name
@@ -2078,7 +2078,7 @@ elif [ "$guimode" == yad-light ];then
 fi
 
 #this array stores flags that are used in all yad windows - saves on the typing and makes it easy to change an attribute on all dialogs from one place.
-yadflags=(--center --window-icon="${DIRECTORY}/icons/logo.png" --title="Pi-Apps" --separator='\n')
+yadflags=(--center --window-icon="${DIRECTORY}/icons/logo.png" --title="L4T-Apps" --separator='\n')
 
 #determine if host system is 64 bit arm64 or 32 bit armhf
 if [ "$(od -An -t x1 -j 4 -N 1 "$(readlink -f /sbin/init)")" = ' 02' ];then
@@ -2097,7 +2097,7 @@ if [[ "$0" == */api ]];then
   exit $?
 #if being sourced, ensure DIRECTORY variable set
 elif [ -z "$DIRECTORY" ] || [ "$DIRECTORY" == "$HOME" ] || [ ! -d "$DIRECTORY" ];then
-  echo "DIRECTORY variable must be set to a valid pi-apps folder. Default folder: $HOME/pi-apps"
+  echo "DIRECTORY variable must be set to a valid l4t-apps folder. Default folder: $HOME/l4t-apps"
   return 1
 fi
 

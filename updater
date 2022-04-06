@@ -10,7 +10,7 @@ function error {
 
 #if being sourced, ensure DIRECTORY variable set
 if [ -z "$DIRECTORY" ] || [ "$DIRECTORY" == "$HOME" ] || [ ! -d "$DIRECTORY" ];then
-  echo "DIRECTORY variable must be set to a valid pi-apps folder. Default folder: $HOME/pi-apps"
+  echo "DIRECTORY variable must be set to a valid l4t-apps folder. Default folder: $HOME/l4t-apps"
   return 1
 fi
 
@@ -22,19 +22,19 @@ get_date() {
   echo $(($(date --utc +%s)/86400))
 }
 
-check_repo() { #download pi-apps repository to the update/pi-apps folder
+check_repo() { #download l4t-apps repository to the update/l4t-apps folder
   echo -n "Checking for online changes... " 1>&2
   
   #if the updater script exists in update folder, then just git pull to save time
-  if [ -s "${DIRECTORY}/update/pi-apps/updater" ];then
-    cd "${DIRECTORY}/update/pi-apps"
+  if [ -s "${DIRECTORY}/update/l4t-apps/updater" ];then
+    cd "${DIRECTORY}/update/l4t-apps"
     git pull -q 1>&2 || rm -rf "${DIRECTORY}/update"
   fi | grep -v "Already up to date." 1>&2
   
   git_url="$(cat "${DIRECTORY}/etc/git_url" || echo 'https://github.com/Botspot/pi-apps')"
   
   #if updater script still does not exist then do a git clone
-  if [ ! -s "${DIRECTORY}/update/pi-apps/updater" ];then
+  if [ ! -s "${DIRECTORY}/update/l4t-apps/updater" ];then
     #keep trying until success
     while true;do
       rm -rf "${DIRECTORY}/update"
@@ -45,7 +45,7 @@ check_repo() { #download pi-apps repository to the update/pi-apps folder
         echo "Done" 1>&2
         break #exit the loop
       else
-        echo -e "\n${DIRECTORY}/updater: failed to download Pi-Apps repository!\nTrying again in 60 seconds." 1>&2
+        echo -e "\n${DIRECTORY}/updater: failed to download L4T-Apps repository!\nTrying again in 60 seconds." 1>&2
         sleep 60
       fi
     done
@@ -91,13 +91,13 @@ check_update_interval() { #return 0 if update-interval allows update-checking to
   return 0
 }
 
-list_files() { #list all files on pi-apps with relative paths - both on main directory and update directory
+list_files() { #list all files on l4t-apps with relative paths - both on main directory and update directory
   if [ ! -d "${DIRECTORY}/update" ];then
     error "${DIRECTORY}/update does not exist. Most likely there is no Internet connection."
   fi
   
   #list all files in update folder
-  cd "${DIRECTORY}/update/pi-apps" || error "Failed to enter update directory!"
+  cd "${DIRECTORY}/update/l4t-apps" || error "Failed to enter update directory!"
   local updatefiles="$(find . -type f | cut -c 3- | grep -v '^\.git/\|^\.github/\|^apps/\|^data/')"
 
   #list all files in main folder
@@ -116,7 +116,7 @@ get_updatable_files() { #sets the updatable_files variable
   else #speed was not set to 'fast', so compare each file to the one in the update folder
     echo -n "Scanning files... " 1>&2
     
-    #get list of pi-apps files without absolute paths. Example line: 'etc/terminal-run'
+    #get list of l4t-apps files without absolute paths. Example line: 'etc/terminal-run'
     local file_list="$(list_files)" || exit 1
     
     updatable_files='' #the variable to be returned
@@ -130,11 +130,11 @@ get_updatable_files() { #sets the updatable_files variable
         updatable_files="${updatable_files}
 ${file}"
         
-      elif [ ! -f "${DIRECTORY}/update/pi-apps/${file}" ];then
+      elif [ ! -f "${DIRECTORY}/update/l4t-apps/${file}" ];then
         #file is missing in the update folder - local
         true #do not add to updatable_apps list
         
-      elif ! diff "${DIRECTORY}/update/pi-apps/${file}" "${DIRECTORY}/${file}" -q >/dev/null ;then
+      elif ! diff "${DIRECTORY}/update/l4t-apps/${file}" "${DIRECTORY}/${file}" -q >/dev/null ;then
         #files don't match - add to updatable_files list
         updatable_files="${updatable_files}
 ${file}"
@@ -176,7 +176,7 @@ get_updatable_apps() { #sets the updatable_apps variable
         #if app is missing locally, add to updatable list
         updatable_apps+=$'\n'"${app}"
         
-      elif ! diff -r "${DIRECTORY}/apps/${app}" "${DIRECTORY}/update/pi-apps/apps/${app}" -q >/dev/null ;then
+      elif ! diff -r "${DIRECTORY}/apps/${app}" "${DIRECTORY}/update/l4t-apps/apps/${app}" -q >/dev/null ;then
         #if app-folder contents don't match, add to updatable list
         updatable_apps+=$'\n'"${app}"
       fi
@@ -198,7 +198,7 @@ generate_yad_list() { #input: updatable_apps and updatable_files variables
   
   for app in $updatable_apps ;do #generate a yad list for every updatable app
     echo "TRUE
-${DIRECTORY}/update/pi-apps/apps/${app}/icon-24.png
+${DIRECTORY}/update/l4t-apps/apps/${app}/icon-24.png
 $app ($([ ! -d "${DIRECTORY}/apps/${app}" ] && echo 'new ')app$(will_reinstall "$app" && echo ', <b>will be reinstalled</b>'))
 app:$app"
   
@@ -332,7 +332,7 @@ list_updates_gui() { #input: updatable_apps and updatable_files variables
   fi
   
   #Display a list of everything updatable
-  output="$(echo -e "$LIST" | yad --center --title='Pi-Apps' \
+  output="$(echo -e "$LIST" | yad --center --title='L4T-Apps' \
     --window-icon="${DIRECTORY}/icons/logo.png" --width=310 --height=300 \
     --list --checklist --separator='\n' --print-column=4 --no-headers \
     --text="Updates available:"$'\n'"Uncheck an item to skip updating it." \
@@ -361,7 +361,7 @@ update_app() { #first word is app name
   status "Updating \e[1m${app}\e[0m\e[96m..."
   echo
   
-  local newinstallhash="$(sha1sum "${DIRECTORY}/update/pi-apps/apps/${app}/${scriptname}" 2>/dev/null | awk '{print $1}')"
+  local newinstallhash="$(sha1sum "${DIRECTORY}/update/l4t-apps/apps/${app}/${scriptname}" 2>/dev/null | awk '{print $1}')"
   local oldinstallhash="$(sha1sum "${DIRECTORY}/apps/${app}/${scriptname}" 2>/dev/null | awk '{print $1}')"
   
   installback=no
@@ -384,7 +384,7 @@ update_app() { #first word is app name
   rm -rf "${DIRECTORY}/apps/${app}"
   
   #copy new version from update/ to apps/
-  cp -rf "${DIRECTORY}/update/pi-apps/apps/${app}" "${DIRECTORY}/apps/${app}"
+  cp -rf "${DIRECTORY}/update/l4t-apps/apps/${app}" "${DIRECTORY}/apps/${app}"
   
   if [ "$installback" == 'yes' ];then
     #install the app again
@@ -410,7 +410,7 @@ update_now_cli() { #input: updatable_files and updatable_apps variables
     mkdir -p "$(dirname "${DIRECTORY}/${file}")"
     
     #copy new version
-    cp -f "${DIRECTORY}/update/pi-apps/${file}" "${DIRECTORY}/${file}" || echo -e "\e[91mFailed to copy ${DIRECTORY}/update/pi-apps/${file}! \e[0m"
+    cp -f "${DIRECTORY}/update/l4t-apps/${file}" "${DIRECTORY}/${file}" || echo -e "\e[91mFailed to copy ${DIRECTORY}/update/l4t-apps/${file}! \e[0m"
     
     #special edge-case: if current file ends in .c, delete the corresponsing executable so that it will be recompiled.
     if [[ "$file" == *.c ]];then
@@ -429,9 +429,9 @@ update_now_cli() { #input: updatable_files and updatable_apps variables
   
   #delete .git folder, then copy the new one
   rm -rf "${DIRECTORY}/.git" || sudo rm -rf "${DIRECTORY}/.git" || error "Failed to delete old ${DIRECTORY}/.git folder!"
-  cp -a "${DIRECTORY}/update/pi-apps/.git" "${DIRECTORY}" || error "Failed to copy new .git folder!"
+  cp -a "${DIRECTORY}/update/l4t-apps/.git" "${DIRECTORY}" || error "Failed to copy new .git folder!"
   
-  [ "$no_status" != true ] && status_green "\nPi-Apps updates complete."
+  [ "$no_status" != true ] && status_green "\nL4T-Apps updates complete."
 }
 
 update_now_gui() { #input: updatable_files and updatable_apps variables
@@ -452,7 +452,7 @@ update_now_gui() { #input: updatable_files and updatable_apps variables
     ' "Updating $(echo "$updatable_apps" | wc -l) app$([ $(echo "$updatable_apps" | wc -l) != 1 ] && echo s)..."
   fi
   
-  status_green "\nPi-Apps updates complete."
+  status_green "\nL4T-Apps updates complete."
 }
 
 screen_width="$(xrandr | grep -oP '(?<=primary )\d+')"
@@ -492,7 +492,7 @@ if [ "$runmode" == autostarted ];then #if update-interval allows, and one app in
   
   #wait until internet works
   while ! command wget --spider https://github.com &>/dev/null ;do
-    echo -n "Pi-Apps updater script: no internet connection yet. "
+    echo -n "L4T-Apps updater script: no internet connection yet. "
     sleep 1
     echo " Waiting 10 seconds..."
     sleep 10
@@ -512,7 +512,7 @@ if [ "$runmode" == autostarted ];then #if update-interval allows, and one app in
   
   status "Displaying notification in lower-right of screen..."
   { #display notification in lower-right
-    output="$(yad --form --text='Pi-Apps updates available.' --separator='\n' \
+    output="$(yad --form --text='L4T-Apps updates available.' --separator='\n' \
       --on-top --skip-taskbar --undecorated --close-on-unfocus \
       --geometry=260+$((screen_width-262))+$((screen_height-150)) \
       --image="${DIRECTORY}/icons/logo-64.png" \
@@ -533,9 +533,9 @@ if [ "$runmode" == autostarted ];then #if update-interval allows, and one app in
         
         echo "Params: '$params'"
         
-        output="$(yad --center --title='Change Pi-Apps update interval' --width=440 \
+        output="$(yad --center --title='Change L4T-Apps update interval' --width=440 \
           --form --separator='\n' --window-icon="${DIRECTORY}/icons/logo.png" \
-          --text="You just requested for Pi-Apps to <i>never check for updates</i> on boot."$'\n'"Are you sure? If so, change the update interval to "\""<b>Never</b>"\"" below." \
+          --text="You just requested for L4T-Apps to <i>never check for updates</i> on boot."$'\n'"Are you sure? If so, change the update interval to "\""<b>Never</b>"\"" below." \
           --field='Update interval: ':CB "$params" \
           --button=Cancel!"${DIRECTORY}/icons/exit.png":1 \
           --button=Save!"${DIRECTORY}/icons/check.png":0)"
@@ -559,8 +559,8 @@ if [ "$runmode" == autostarted ];then #if update-interval allows, and one app in
   
   update_now_gui
   
-  #display notification saying that pi-apps updates are complete
-  yad --form --text='Pi-Apps updates complete.' \
+  #display notification saying that l4t-apps updates are complete
+  yad --form --text='L4T-Apps updates complete.' \
     --on-top --skip-taskbar --undecorated --close-on-unfocus \
     --geometry=260+$((screen_width-262))+$((screen_height-150)) \
     --image="${DIRECTORY}/icons/logo-64.png" \
