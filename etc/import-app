@@ -38,10 +38,10 @@ import_zip() { #given a zipfile, extract it to apps directory and return the nam
     #return the name of the app
     echo "$app_name"
     [ -z "$app_name" ] && error "Failed to determine a name for the app, given this filename: '$import'"
-    #remove the app from pi-apps first
+    #remove the app from l4t-apps first
     rm -rf "${DIRECTORY}/apps/${app_name}"
     
-    #then move the folder straight to the pi-apps folder
+    #then move the folder straight to the l4t-apps folder
     mv -f "$(find "$tmpdir" -maxdepth 1 -type d | tail +2)" "${DIRECTORY}/apps"
     
   else #if extracted archive did not contain exactly one folder and zero loose files
@@ -70,7 +70,7 @@ Apps are saved in <b>$DIRECTORY/apps</b>.
 Put something in in the blank below.
 Examples:
 
-    <b>https://github.com/Botspot/pi-apps/pull/1068</b>
+    <b>https://github.com/Dark98/l4t-apps/pull/1068</b>
     <b>1068</b>
     <b>https://link/to/app.zip</b>
     <b>$HOME/my-app.zip</b>\n" \
@@ -132,9 +132,9 @@ elif [[ "$import" =~ ^[0-9]+$ ]] || [[ "$import" == *'://'*'/pull/'*[0-9] ]];the
   #check for internet connection
   ping -q -c1 google.com &>/dev/null || error "No internet connection!\ngoogle.com failed to respond.\nErrors: $(ping -q -c1 google.com 2>&1)" 
   
-  #if given a PR number, assume it's a PR on the pi-apps repo
+  #if given a PR number, assume it's a PR on the l4t-apps repo
   if [[ "$import" =~ ^[0-9]+$ ]];then
-    PR="https://github.com/Botspot/pi-apps/pull/${import}"
+    PR="https://github.com/Dark98/l4t-apps/pull/${import}"
   else
     #if given a url to a PR
     PR="$import"
@@ -164,34 +164,34 @@ elif [[ "$import" =~ ^[0-9]+$ ]] || [[ "$import" == *'://'*'/pull/'*[0-9] ]];the
   echo -e "\nrepo: $repo\nbranch: $branch\nusername: $username\ntmpdir: $(pwd)\n"
   
   echo -n "Downloading repository... "
-  errors="$(git clone "https://github.com/${repo}" -b $branch -q pi-apps 2>&1)" || error "Failed to clone repository: $repo\nErrors:\n$errors"
+  errors="$(git clone "https://github.com/${repo}" -b $branch -q l4t-apps 2>&1)" || error "Failed to clone repository: $repo\nErrors:\n$errors"
   echo "Done"
   
   echo -n "Syncing fork with upstream repo... "
-  cd $(pwd)/pi-apps
+  cd $(pwd)/l4t-apps
   git config user.email "user@example.com" #set email in this repo so that it can pull
   git config user.name "user" #set username in this repo so that it can pull
-  errors="$(git pull https://github.com/Botspot/pi-apps --rebase -q 2>&1)" || error "Failed to sync upstream repo. \nErrors:\n$errors"
+  errors="$(git pull https://github.com/Dark98/l4t-apps --rebase -q 2>&1)" || error "Failed to sync upstream repo. \nErrors:\n$errors"
   
   cd .. #back to tmpdir
   echo "Done"
   
-  echo -n "Getting pi-apps repo for comparison... "
-  errors="$(git clone "https://github.com/Botspot/pi-apps" pi-apps-master -q 2>&1)" || error "Failed to clone Botspot pi-apps repository.\nErrors:\n$errors"
+  echo -n "Getting l4t-apps repo for comparison... "
+  errors="$(git clone "https://github.com/Dark98/l4t-apps" l4t-apps-master -q 2>&1)" || error "Failed to clone Dark98 l4t-apps repository.\nErrors:\n$errors"
   echo "Done"
   
-  #get list of apps that are unique to this pi-apps folder. (not on main repo)
-  applist="$("$(pwd)/pi-apps/api" list_apps local_only)"
+  #get list of apps that are unique to this l4t-apps folder. (not on main repo)
+  applist="$("$(pwd)/l4t-apps/api" list_apps local_only)"
   
   #get apps that don't match the ones in main branch - find only new apps
-  imported_apps="$(diff -rq "$(pwd)/pi-apps/apps" "$(pwd)/pi-apps-master/apps" | grep "Only in $(pwd)/pi-apps/apps:"  | sed 's+.*/pi-apps-master.++g' | sed 's+.*apps/++g' | sed 's+.*apps: ++g'  | sed 's+/.*++g' | sort | uniq | grep .)"
+  imported_apps="$(diff -rq "$(pwd)/l4t-apps/apps" "$(pwd)/l4t-apps-master/apps" | grep "Only in $(pwd)/l4t-apps/apps:"  | sed 's+.*/l4t-apps-master.++g' | sed 's+.*apps/++g' | sed 's+.*apps: ++g'  | sed 's+/.*++g' | sort | uniq | grep .)"
 
   IFS=$'\n'
   for app in $applist
   do
     echo -en "Scanning apps... $app\033[0K\r" 1>&2
 
-    if [ -d "$(pwd)/pi-apps/apps/${app}" ] && [ -d "$(pwd)/pi-apps-master/apps/${app}" ] && ! diff -r "$(pwd)/pi-apps/apps/${app}" "$(pwd)/pi-apps-master/apps/${app}" -q >/dev/null 2>&1; then
+    if [ -d "$(pwd)/l4t-apps/apps/${app}" ] && [ -d "$(pwd)/l4t-apps-master/apps/${app}" ] && ! diff -r "$(pwd)/l4t-apps/apps/${app}" "$(pwd)/l4t-apps-master/apps/${app}" -q >/dev/null 2>&1; then
       #if app hashes don't match, add to imported list
       #find only changed apps
       if [ -z "$imported_apps" ]; then
@@ -216,8 +216,8 @@ ${app}"
     #remove directory first and replace with copied version from PR
     #this prevents orphaned files when moving from install-32/install-64 to install
     rm -rf "${DIRECTORY}/apps/$app"
-    cp -af "$(pwd)/pi-apps/apps/$app" "${DIRECTORY}/apps"
-    echo "Copied '$(pwd)/pi-apps/apps/${app}' to ${DIRECTORY}/apps"
+    cp -af "$(pwd)/l4t-apps/apps/$app" "${DIRECTORY}/apps"
+    echo "Copied '$(pwd)/l4t-apps/apps/${app}' to ${DIRECTORY}/apps"
   done
   
 else

@@ -380,8 +380,8 @@ Or do you want one combined install script?" | yad "${yadflags[@]}" --text-info 
 
 One of these scripts will be executed when somebody clicks your app's Install button.
 Two text editors should have openened and you can create your scripts.
-Need help? <a href="\""https://github.com/Botspot/pi-apps/wiki/Creating-an-app"\"">Read the tutorial!</a>
-Still need help? Botspot can try to help you if you <a href="\""https://github.com/Botspot/pi-apps/issues/new/choose"\"">open in issue.</a>" \
+Need help? <a href="\""https://github.com/Dark98/l4t-apps/wiki/Creating-an-app"\"">Read the tutorial!</a>
+Still need help? Someone can try to help you if you <a href="\""https://github.com/Dark98/l4t-apps/issues/new/choose"\"">open in issue.</a>" \
           --field="Run install-32 script":FBTN "${DIRECTORY}/etc/terminal-run "\""cd $HOME ; DIRECTORY='$DIRECTORY' ; source '${DIRECTORY}/api' ; '${DIRECTORY}/apps/${name}/install-32' ; echo 'Closing in 10 seconds.' ; sleep 10"\"" "\""Running install-32 script of $name"\""" \
           --field="Shellcheck install-32"!!'Having problems? This utility helps you locate syntax errors.':FBTN "${DIRECTORY}/etc/terminal-run "\""shellcheck $'${DIRECTORY}/apps/${name}/install-32';echo 'Press Enter to exit.';read enter"\"" "\""Shellcheck"\""" \
           --field="Run install-64 script":FBTN "${DIRECTORY}/etc/terminal-run "\""cd $HOME ; DIRECTORY='$DIRECTORY' ; source '${DIRECTORY}/api' ; '${DIRECTORY}/apps/${name}/install-64' ; echo 'Closing in 10 seconds.' ; sleep 10"\"" "\""Running install-64 script of $name"\""" \
@@ -397,8 +397,8 @@ Still need help? Botspot can try to help you if you <a href="\""https://github.c
           --text="Now it's time to make your ${compatibility} script. This will be executed anytime somebody clicks the Install button.
 
 A text editor should have openened and you can create your install script.
-Need help? <a href="\""https://github.com/Botspot/pi-apps/wiki/Creating-an-app"\"">Read the tutorial!</a>
-Still need help? Botspot can try to help you if you <a href="\""https://github.com/Botspot/pi-apps/issues/new/choose"\"">open in issue.</a>" \
+Need help? <a href="\""https://github.com/Dark98/l4t-apps/wiki/Creating-an-app"\"">Read the tutorial!</a>
+Still need help? Someone can try to help you if you <a href="\""https://github.com/Dark98/l4t-apps/issues/new/choose"\"">open in issue.</a>" \
           --field="Run script":FBTN "${DIRECTORY}/etc/terminal-run "\""cd $HOME ; DIRECTORY='$DIRECTORY' ; source '${DIRECTORY}/api' ; '${DIRECTORY}/apps/${name}/${compatibility}' ; echo 'Closing in 10 seconds.' ; sleep 10"\"" "\""Running ${compatibility} script of $name"\""" \
           --field="Shellcheck"!!'Having problems? This utility locates syntax errors.':FBTN "${DIRECTORY}/etc/terminal-run "\""shellcheck $'${DIRECTORY}/apps/${name}/${compatibility}';echo 'Press Enter to exit.';read enter"\"" "\""Shellcheck"\""" \
           --button=Previous!"${DIRECTORY}/icons/back.png":2 \
@@ -506,7 +506,7 @@ Here's a preview of the Details window:
       
     7) #All done
       echo "Your app is located at ${DIRECTORY}/apps/${name}
-To add your app to the L4T-Apps official repository, put that folder in a .ZIP file and open an issue on the L4T-Apps repository: https://github.com/Botspot/pi-apps/issues/new" | yad "${yadflags[@]}" --text-info \
+To add your app to the L4T-Apps official repository, put that folder in a .ZIP file and open an issue on the L4T-Apps repository: https://github.com/Dark98/l4t-apps/issues/new" | yad "${yadflags[@]}" --text-info \
         --text="Done!" \
         --fontname=12 --wrap --show-uri \
         --image="${DIRECTORY}/icons/in-progress.png" --image-on-top \

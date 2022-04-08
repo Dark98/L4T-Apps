@@ -25,5 +25,5 @@ sudo rm -f /usr/local/bin/l4t-apps
 
 echo -e "\e[32mUninstallation complete.\e[97m Only $HOME/l4t-apps still remains.
 If L4T-apps didn"\'"t work for you, \e[4m\e[21m\e[5mPLEASE\e[0m\e[97m consider submitting a \e[1mbug report\e[0m!
---> \e[96mhttps://github.com/Botspot/pi-apps/issues/new\e[39m"
+--> \e[96mhttps://github.com/Botspot/l4t-apps/issues/new\e[39m"
 

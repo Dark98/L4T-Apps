@@ -31,7 +31,7 @@ check_repo() { #download l4t-apps repository to the update/l4t-apps folder
     git pull -q 1>&2 || rm -rf "${DIRECTORY}/update"
   fi | grep -v "Already up to date." 1>&2
   
-  git_url="$(cat "${DIRECTORY}/etc/git_url" || echo 'https://github.com/Botspot/pi-apps')"
+  git_url="$(cat "${DIRECTORY}/etc/git_url" || echo 'https://github.com/Dark98/l4t-apps')"
   
   #if updater script still does not exist then do a git clone
   if [ ! -s "${DIRECTORY}/update/l4t-apps/updater" ];then

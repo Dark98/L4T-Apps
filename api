@@ -1267,33 +1267,8 @@ Perhaps this link will help: https://askubuntu.com/questions/909719/dpkg-unrecov
     error_type="package"
   fi
   
-  if grep -qF "raspberrypi-kernel package post-installation script subprocess returned error exit status" <<<"$errors" ;then
-    error_caption+=("The raspberrypi-kernel package on your system is causing problems.
-L4T-Apps, dpkg and APT won't work properly until the problem is fixed.
-
-Google the errors above this message, or ask in the Raspberry Pi Forums.
-https://www.raspberrypi.org/forums")
-    error_type="package"
-  fi
-  
-  if grep -qF "raspberrypi-bootloader package pre-installation script subprocess returned error exit status" <<<"$errors" ;then
-    error_caption+=("The raspberrypi-bootloader package on your system is causing problems.
-L4T-Apps, dpkg and APT won't work properly until the problem is fixed.
-
-Google the errors above this message, or ask in the Raspberry Pi Forums.
-https://www.raspberrypi.org/forums")
-    error_type="package"
-  fi
-  
   if grep -qF "error processing package nginx-full" <<<"$errors" ;then
     error_caption+=("The nginx-full package on your system encountered a problem.
-
-Maybe reinstalling this package would help?")
-    error_type="package"
-  fi
-  
-  if grep -qF "libwine-development:arm64 package post-installation script subprocess returned error exit status" <<<"$errors" ;then
-    error_caption+=("The libwine-development package on your system encountered a problem.
 
 Maybe reinstalling this package would help?")
     error_type="package"
