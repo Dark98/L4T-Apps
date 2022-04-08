@@ -536,25 +536,6 @@ This app installed these packages: $(cat "${DIRECTORY}/data/installed-packages/$
         
       fi
       
-      if [ -z "$clicklist" ];then
-        source "${DIRECTORY}/api"
-        clicklist="$(usercount)"
-      fi
-      
-      usercount="$(echo "$clicklist" | grep " $app"'$' | awk '{print $1}' | head -n1)"
-      if [ ! -z "$usercount" ] && [ "$usercount" -gt 20 ];then
-        abovetext="$abovetext
-- <b>$(printf "%'d" "$usercount")</b> users"
-        
-        if [ "$usercount" -ge 1500 ] && [ "$usercount" -lt 10000 ];then
-          #if a lot of users, add an exclamation point!
-          abovetext="${abovetext}!"
-        elif [ "$usercount" -ge 10000 ];then
-          #if a crazy number of users, add two exclamation points!
-          abovetext="${abovetext}!!"
-        fi
-      fi
-      
       #array holding various buttons that may be passed to yad
       whichbutton=()
       

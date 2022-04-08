@@ -272,9 +272,6 @@ elif [ "$1" == 'install' ] || [ "$1" == 'uninstall' ];then
     done
   fi
   
-  #analytics
-  bitly_link "$app" "$mode" &
-  
   #if this app has scripts, determine which script to run
   if [ "$(app_type "$app")" == standard ];then
     if [ "$mode" == install ];then

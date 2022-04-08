@@ -1,5 +1,5 @@
 /* =============================================================== *
- *      Pi-Apps app list preloader for YAD GUI app list style.     *
+ *      L4T-Apps app list preloader for YAD GUI app list style.     *
  *               Written by Itai-Nelken 09/09/2021                 *
  * --------------------------------------------------------------- *
  *      gcc genapplist-yad.c -o prel -Wall -Wextra -Wpedantic      *
@@ -58,9 +58,9 @@ void getLine(const char *filename, char *out, size_t size) {
 }
 
 /******
- * get the status of a app in pi-apps
+ * get the status of a app in l4t-apps
  * 
- * @param directory The path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory The path to the l4t-apps folder (e.g /home/switchroot/l4t-apps)
  * @param app The app to get it's status.
  * @param status The char array to put the status in.
  * @param size The size of 'status'.
@@ -79,9 +79,9 @@ void get_app_status(char *directory, const char *app, char *status, size_t size)
 }
 
 /******
- * get the status of a app in pi-apps but if it doesn't have a status file but it exists, use "none"
+ * get the status of a app in l4t-apps but if it doesn't have a status file but it exists, use "none"
  * 
- * @param directory The path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory The path to the l4t-apps folder (e.g /home/switchroot/l4t-apps)
  * @param app The app to get it's status.
  * @param status The char array to put the status in.
  * @param size The size of 'status'.
@@ -102,7 +102,7 @@ void get_app_status_with_none(char *directory, const char *app, char *status, si
 /******
  * get the path to the status icon for a app based on the it's status.
  * 
- * @param directory The path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory The path to the l4t-apps folder (e.g /home/switchroot/l4t-apps)
  * @param app The app to get it's status icon.
  * @param status The char array to put the status icon in.
  * @param size The size of 'icon'.
@@ -124,7 +124,7 @@ void get_status_icon(char *directory, const char *app, char *icon, size_t size) 
 /******
  * get the path to a apps icon.
  * 
- * @param directory The path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory The path to the l4t-apps folder (e.g /home/switchroot/l4t-apps)
  * @param app The app to get it's icon path.
  * @param icon The char array to put the status in.
  * @param size The size of 'icon'.
@@ -143,7 +143,7 @@ void get_app_icon(char *directory, const char *app, char *icon, size_t size) {
 /******
  * get the status and first line of the description of an app in the following format: '(STATUS) DESCRIPTION'
  * 
- * @param directory The path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory The path to the l4t-apps folder (e.g /home/switchroot/l4t-apps)
  * @param app The app
  * @param out The char array to put the output in.
  * @param size The size of 'out'.
@@ -166,7 +166,7 @@ void get_app_status_and_desc(char *directory, const char *app, char *out, size_t
  * Collect and print to stdout all the data for a app.
  * 
  * @param app the app to use
- * @param directory the path to the pi-apps folder (e.g /home/pi/pi-apps)
+ * @param directory the path to the l4t-apps folder (e.g /home/switchroot/l45-apps)
  ******/
 void print_all(const char *app, char *directory) {
 	char st_icon[300]={0}, app_icon[4096]={0}, desc[4096]={0};
@@ -216,15 +216,15 @@ int main(void) {
  * 1) status icon
  * 2) app icon
  * 3) app name
- * 4) app folder name (in ~/pi-apps/apps)
+ * 4) app folder name (in ~/l4t-apps/apps)
  * 5) status and short description
 ***********************/
 
-/* LOOP OVER EVERY APP IN $HOME/PI-APPS/APPS *
+/* LOOP OVER EVERY APP IN $HOME/L4T-APPS/APPS *
 char *home=getHomePath();
 	char path[strlen(home)+20];
 	str_zero(path);
-	snprintf(path, strlen(home)+20, "%s/pi-apps/apps", home);
+	snprintf(path, strlen(home)+20, "%s/l4t-apps/apps", home);
 	DIR *dir;
 	struct dirent *d;
 	dir=opendir(path);
