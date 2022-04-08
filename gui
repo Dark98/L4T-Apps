@@ -241,7 +241,7 @@ uninstall() {
 
 #Determine message of the day. If announcements file missing or over a day old, download it.
 if [ ! -f "${DIRECTORY}/data/announcements" ] || [ ! -z "$(find "${DIRECTORY}/data/announcements" -mtime +1 -print)" ]; then
-  wget https://raw.githubusercontent.com/Dark98/l4t-apps/master/announcements/message -qO "${DIRECTORY}/data/announcements"
+  wget https://raw.githubusercontent.com/Dark98/l4t-apps/master/message -qO "${DIRECTORY}/data/announcements"
 fi
 
 #app list mode. Allowed values: 'yad', 'xlunch'
