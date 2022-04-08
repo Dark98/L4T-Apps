@@ -44,13 +44,8 @@ source "${DIRECTORY}/api" || error "failed to source ${DIRECTORY}/api"
 generate_logo
 
 (
-#remove old apps and migrate chromium downgrading apps to the new "Downgrade Chromium" app
+#Currently not used
 runonce <<"EOF"
-  
-  #rename 'L4T-Apps Terminal Plugin' app to 'L4T-Apps Terminal Plugin (python)'
-  rm -rf "${DIRECTORY}/apps/L4T-Apps Terminal Plugin"
-  mv -f "${DIRECTORY}/data/status/L4T-Apps Terminal Plugin" "${DIRECTORY}/data/status/L4T-Apps Terminal Plugin (python)" 2>/dev/null
-  
   true
 EOF
 
@@ -77,27 +72,6 @@ runonce <<"EOF"
   fi
 EOF
 
-#transition from box86-no-binfmt-restart package to box86
-runonce <<"EOF"
-  if dpkg -l box86-no-binfmt-restart &>/dev/null ;then
-    sudo dpkg --remove box86-no-binfmt-restart l4t-apps-5f3374a7 && sudo apt update && sudo apt install box86 -y
-  fi
-  
-  #if box86 is supposedly installed, but box86 command not found, reinstall box86
-  if [ "$(app_status Box86)" == 'installed' ] && ! command -v box86 >/dev/null;then
-    rm -f "${DIRECTORY}/data/status/Box86"
-    "${DIRECTORY}/manage" uninstall Box86
-    "${DIRECTORY}/manage" install Box86
-  fi
-  true
-EOF
-
-#remove files from l4t-apps folder that are no longer used
-runonce <<"EOF"
-  rm -f "${DIRECTORY}/etc/bitlylink"
-  rm -rf "${DIRECTORY}/data/categories"
-EOF
-
 #regenerate package-app status for one-time migration
 runonce <<"EOF"
   IFS=$'\n'
@@ -106,11 +80,6 @@ runonce <<"EOF"
   done
   
   refresh_all_pkgapp_status
-EOF
-
-#change settings icon
-runonce <<"EOF"
-  [ -a "$HOME/.local/share/applications/l4t-apps-settings.desktop" ] && sed -i "s/logo.png/settings.png/g" "$HOME/.local/share/applications/l4t-apps-settings.desktop" || true
 EOF
 
 #recompile xlunch for existing users because icons are rendered differently now. See: https://github.com/Tomas-M/xlunch/issues/129#issuecomment-1051006971
