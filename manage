@@ -45,7 +45,7 @@ fi
 #Silently re-download repo if github repository is over 3 months out of date
 {
 command -v curl >/dev/null || sudo apt install -y curl
-upstream_git_date="$(curl https://api.github.com/repos/BotSpot/pi-apps/commits/master 2>&1 | grep '"date":' | tail -n 1 | sed 's/"date"://g' | xargs date +%s -d 2>/dev/null)"
+upstream_git_date="$(curl https://api.github.com/repos/Dark98/l4t-apps/commits/master 2>&1 | grep '"date":' | tail -n 1 | sed 's/"date"://g' | xargs date +%s -d 2>/dev/null)"
 current_git_date="$(cd "$DIRECTORY"; git show -s --format=%ct)"
 
 if [[ "$upstream_git_date" =~ ^[0-9]+$ ]] && ([ -z "$current_git_date" ] || [ "$upstream_git_date" -gt $(($current_git_date + 7776000)) ]);then
@@ -188,7 +188,7 @@ $app"
     if [ "$(app_type "$app")" == package ];then
       text+=$'\n'"As this is an APT error, consider Googling the errors or asking for help in the <a href=\"https://forums.raspberrypi.com\">Raspberry Pi Forums</a>."
     else
-      text+=$'\n'"Support is available on <a href=\"https://discord.gg/RXSTvaUvuu\">Discord</a> and <a href=\"https://github.com/Botspot/pi-apps/issues/new/choose\">Github</a>."
+      text+=$'\n'"Support is available on <a href=\"https://discord.gg/RXSTvaUvuu\">Discord</a> and <a href=\"https://github.com/Dark98/l4t-apps/issues/new/choose\">Github</a>."
     fi
     
     #if the error_caption is empty, display logfile instead
@@ -333,7 +333,7 @@ elif [ "$1" == 'install' ] || [ "$1" == 'uninstall' ];then
 
     echo -e "\n\e[91mFailed to ${mode} ${app}!\e[39m
 \e[40m\e[93m\e[5m◢◣\e[25m\e[39m\e[49m\e[93mNeed help? Copy the \e[1mENTIRE\e[0m\e[49m\e[93m terminal output or take a screenshot.
-Please ask on Github: \e[94m\e[4mhttps://github.com/Botspot/pi-apps/issues/new/choose\e[24m\e[93m
+Please ask on Github: \e[94m\e[4mhttps://github.com/Dark98/l4t-apps/issues/new/choose\e[24m\e[93m
 Or on Discord: \e[94m\e[4mhttps://discord.gg/RXSTvaUvuu\e[0m" | tee -a "$logfile"
     
     #set the app's status to 'corrupted' if the diagnostics determine the error is NOT internet or system or package, AND if the app is a script-type app
