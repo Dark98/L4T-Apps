@@ -20,6 +20,9 @@ rm -f ~/.local/share/applications/l4t-apps-settings.desktop
 rm -f ~/.config/autostart/l4t-apps-updater.desktop
 rm -f ~/Desktop/l4t-apps.desktop
 
+echo "Removing L4T-Apps Home Directory..."
+sudo rm -f ~/l4t-apps
+
 echo "Removing terminal command..."
 sudo rm -f /usr/local/bin/l4t-apps
 
